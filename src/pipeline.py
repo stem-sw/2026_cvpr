@@ -11,7 +11,7 @@ from typing import Optional
 
 from .config import OUTPUT_ROOT, VIDEO_DIR
 from .stage1.full import run_stage1_flow
-from .stage2.full import run_stage2
+from .stage1.refine_full import run_stage2
 from .stage3.run import run_stage3
 from .stage4.run import run_stage4
 from .utils.io_utils import build_video_lookup, get_run_dir, scan_video_files

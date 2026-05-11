@@ -14,7 +14,7 @@ from ..utils.io_utils import append_stage_row, get_processed_paths, resolve_vide
 from ..utils.logging_utils import format_elapsed
 from ..utils.validators import snap_time_to_frame
 from ..utils.video import load_video_frames_for_vlm, probe_video_info
-from ..stage2.clip import run_stage2
+from .refine_clip import run_stage2
 
 
 # ---------------------------------------------------------------------------

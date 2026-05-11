@@ -84,7 +84,7 @@ def run_stage3(
     import os
     stage2_data = load_stage_csv(run_dir, 2)
     if not stage2_data:
-        print("[Stage 3] stage2.csv 없음 — Stage 2를 먼저 실행하세요.")
+        print("[Stage 3] stage2.csv 없음 — Stage 1 time flow를 먼저 실행하세요.")
         return
 
     print(f"\n[Stage 3] 사고 유형 분류 — {len(stage2_data)}개 영상")

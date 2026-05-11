@@ -42,13 +42,13 @@ STAGE1_MAX_FRAMES  = 196 if _VARIANT == "full_run" else 120   # full_run=196, �
 STAGE1_MAX_RETRIES = 2
 STAGE1_MIN_SEC     = 0.10
 
-# ── Stage 2 — 사고 시각 정밀화 ─────────────────────────────────────────────
+# ── Stage 1 refinement — 사고 시각 정밀화 ─────────────────────────────────
 STAGE2_TARGET_FPS  = 6.0
 STAGE2_MAX_FRAMES  = 120
 STAGE2_MAX_RETRIES = 3
 STAGE2_CLIP_SEC    = 4.0
 
-# Stage 2 clip variant (±2초 클립 고해상도 분석)
+# Stage 1 clip refinement variant (±2초 클립 고해상도 분석)
 STAGE2_CLIP_WINDOW_SEC = 2.0
 STAGE2_CLIP_TARGET_FPS = 10.0
 STAGE2_CLIP_MAX_FRAMES = 40

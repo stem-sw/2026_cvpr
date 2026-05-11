@@ -1,5 +1,5 @@
 """
-stage2/clip.py — 후보 ±WINDOW초 집중 클립 분석으로 사고 시각 정밀화 (clip variant).
+stage1/refine_clip.py — Stage 1 time flow 후보 클립 정밀화 (clip variant).
 """
 import os
 import time
@@ -87,7 +87,7 @@ Output format:
 
 
 # ---------------------------------------------------------------------------
-# Stage 2
+# Stage 1 refinement
 # ---------------------------------------------------------------------------
 
 def _analyze_clip(
@@ -116,7 +116,7 @@ def _analyze_clip(
         )
         result = call_qwen_for_frame_sequence(
             model, sampling_params, sampled["frames"], sampled["timestamps"],
-            prompt, label=f"stage2/clip{candidate_rank} {video_name}", max_retries=2,
+            prompt, label=f"stage1/refine_clip{candidate_rank} {video_name}", max_retries=2,
         )
         if not result:
             continue
@@ -139,10 +139,10 @@ def run_stage2(
 ) -> None:
     stage1_data = load_stage_csv(run_dir, 1)
     if not stage1_data:
-        print("[Stage 2] stage1.csv 없음 — Stage 1을 먼저 실행하세요.")
+        print("[Stage 1 refinement] stage1.csv 없음 — Stage 1을 먼저 실행하세요.")
         return
 
-    print(f"\n[Stage 2 / Clip] 집중 클리핑 정밀화 — {len(stage1_data)}개 영상")
+    print(f"\n[Stage 1 refinement / Clip] 집중 클리핑 정밀화 — {len(stage1_data)}개 영상")
     processed = get_processed_paths(run_dir, 2) if SKIP_EXISTING else set()
 
     for video_name, s1_row in stage1_data.items():
@@ -213,7 +213,7 @@ def run_stage2(
 
         clip_ok = extract_clip(abs_path, clip_path, clip_start, clip_end)
 
-        print(f"  -> Stage2: {accident_time:.3f}s (fallback={fallback_used})")
+        print(f"  -> Stage1 refine: {accident_time:.3f}s (fallback={fallback_used})")
 
         append_stage_row(run_dir, 2, {
             "path"          : video_name,

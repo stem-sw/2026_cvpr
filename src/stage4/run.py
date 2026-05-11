@@ -91,7 +91,7 @@ def run_stage4(
     stage3_data = load_stage_csv(run_dir, 3)
 
     if not stage2_data:
-        print("[Stage 4] stage2.csv 없음 — Stage 2를 먼저 실행하세요.")
+        print("[Stage 4] stage2.csv 없음 — Stage 1 time flow를 먼저 실행하세요.")
         return
 
     print(f"\n[Stage 4] 충돌 위치 추론 — {len(stage2_data)}개 영상")

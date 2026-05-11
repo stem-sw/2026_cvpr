@@ -1,5 +1,5 @@
 """
-stage2/full.py — 전체 영상 재샘플링으로 사고 시각 정밀화 (full_run variant).
+stage1/refine_full.py — Stage 1 time flow 정밀화 (full_run variant).
 """
 import os
 import time
@@ -92,7 +92,7 @@ Critical output rules:
 
 
 # ---------------------------------------------------------------------------
-# Stage 2
+# Stage 1 refinement
 # ---------------------------------------------------------------------------
 
 def run_stage2(
@@ -100,10 +100,10 @@ def run_stage2(
 ) -> None:
     stage1_data = load_stage_csv(run_dir, 1)
     if not stage1_data:
-        print("[Stage 2] stage1.csv 없음 — Stage 1을 먼저 실행하세요.")
+        print("[Stage 1 refinement] stage1.csv 없음 — Stage 1을 먼저 실행하세요.")
         return
 
-    print(f"\n[Stage 2] 사고 시각 정밀화 — {len(stage1_data)}개 영상")
+    print(f"\n[Stage 1 refinement] 사고 시각 정밀화 — {len(stage1_data)}개 영상")
     processed = get_processed_paths(run_dir, 2) if SKIP_EXISTING else set()
 
     for video_name, s1_row in stage1_data.items():
@@ -136,10 +136,10 @@ def run_stage2(
                                          retry_count=attempt, video_info=video_info)
             result = call_qwen_for_frame_sequence(
                 model, sampling_params, sampled["frames"], sampled["timestamps"],
-                prompt, label=f"stage2 {video_name}", max_retries=2,
+                prompt, label=f"stage1/refine {video_name}", max_retries=2,
             )
             t = validate_accident_time(result or {})
-            print_debug_payload("stage2", result)
+            print_debug_payload("stage1/refine", result)
 
             if t is not None and not is_near_zero(t, STAGE1_MIN_SEC):
                 accident_time = snap_time_to_frame(
@@ -179,7 +179,7 @@ def _save_stage2_row(run_dir, video_name, abs_path, accident_time, fallback_used
     if not clip_ok:
         clip_path = ""
 
-    print(f"  -> Stage2: {accident_time:.3f}s (frame={frame_index}, fallback={fallback_used})")
+    print(f"  -> Stage1 refine: {accident_time:.3f}s (frame={frame_index}, fallback={fallback_used})")
 
     append_stage_row(run_dir, 2, {
         "path"          : video_name,

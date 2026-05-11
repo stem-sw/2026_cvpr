@@ -13,6 +13,9 @@ __pycache__/
 .vscode/
 .sisyphus/
 
+# Local publishing notes
+GITHUB_PUBLISHING_CHECKLIST.md
+
 # Archived/internal research material excluded from the public root release
 00_data/
 01_planning/

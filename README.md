@@ -109,10 +109,12 @@ CUDA_VISIBLE_DEVICES=1 conda run -n qwen35 python src/run_reproduce.py --run-id 
 
 이 스크립트는 아래 순서로 실행됩니다.
 
-1. full variant Stage 1/2
-2. clip variant Stage 1/2
+1. full variant Stage 1 time flow
+2. clip variant Stage 1 time flow
 3. min-ensemble
 4. Stage 3/4
+
+Stage 1 time flow는 `stage1.csv`를 만든 뒤 같은 흐름에서 정밀화 결과인 `stage2.csv`까지 생성합니다. 이후 Stage 3/4는 기존처럼 `stage2.csv`를 입력으로 사용합니다.
 
 최종 결과:
 
@@ -135,7 +137,7 @@ conda run -n qwen35 python src/run_reproduce.py --run-id smoke_baseline_qwen35 -
 - `bash setup_data.sh` 성공
 - `data/videos/` 2027개 인덱싱 완료
 - `output/smoke_one_gpu1_full/stage1.csv` 생성 확인
-- `smoke_one_gpu1` 기준으로 Stage 1 완료 후 Stage 2 진입 확인
+- `smoke_one_gpu1` 기준으로 Stage 1 time flow 진입 확인
 - `smoke_baseline_qwen35` 기준으로 full + clip + min-ensemble + Stage 3/4 전체 완주 확인
 - `output/smoke_baseline_qwen35/submission.csv` 생성 확인
 
@@ -158,6 +160,8 @@ CUDA_VISIBLE_DEVICES=1 conda run -n qwen35 python src/run_reproduce.py --run-id 
 CUDA_VISIBLE_DEVICES=1 conda run -n qwen35 python src/run_reproduce.py --run-id reproduce_v1 --from-step 3
 CUDA_VISIBLE_DEVICES=1 conda run -n qwen35 python src/run_reproduce.py --run-id reproduce_v1 --from-step 4
 ```
+
+개별 variant를 직접 실행할 때 `--only-stage 1`은 시간 추론 전체 흐름을 의미하며, `stage1.csv`와 `stage2.csv`를 함께 준비합니다. 기존 호환을 위해 `--only-stage 2`는 `stage1.csv`가 이미 있을 때 정밀화만 다시 실행하는 내부용 경로로 남겨두었습니다.
 
 ## 개별 실행 진입점
 

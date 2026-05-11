@@ -14,6 +14,7 @@ from ..utils.io_utils import append_stage_row, get_processed_paths, resolve_vide
 from ..utils.logging_utils import format_elapsed
 from ..utils.validators import is_near_zero, print_debug_payload, snap_time_to_frame, validate_accident_time
 from ..utils.video import load_video_frames_for_vlm, probe_video_info
+from ..stage2.full import run_stage2
 
 
 # ---------------------------------------------------------------------------
@@ -145,3 +146,16 @@ def run_stage1(
             "frame_index": frame_index, "retry_count": retry_count,
         })
         print(f"  완료 ({format_elapsed(time.time() - t0)})")
+
+
+def run_stage1_flow(
+    model, stage1_sampling_params, sampling_params, run_dir: str,
+    video_files: List[str], video_lookup: Dict[str, str],
+    max_frames: Optional[int] = None,
+) -> None:
+    """Stage 1 시간 후보 추론부터 정밀화(stage2.csv 생성)까지 한 번에 수행합니다."""
+    run_stage1(
+        model, stage1_sampling_params, run_dir,
+        video_files, video_lookup, max_frames=max_frames,
+    )
+    run_stage2(model, sampling_params, run_dir, video_lookup)

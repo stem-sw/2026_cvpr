@@ -2,8 +2,8 @@
 run_tokens.py — tokens 실험: full+clip min_ensemble + 고해상도 Stage 3/4
 
 흐름:
-  1. [full variant] Stage 1/2  → output/{run_id}_full/
-  2. [clip variant] Stage 1/2  → output/{run_id}_clip/
+  1. [full variant] Stage 1 time flow  → output/{run_id}_full/
+  2. [clip variant] Stage 1 time flow  → output/{run_id}_clip/
   3. min_ensemble (accident_time 최솟값)
   4. [tokens 설정] Stage 3/4   → output/{run_id}/
 
@@ -28,9 +28,8 @@ os.environ["PIPELINE_VARIANT"] = "tokens"
 
 from src.config import VIDEO_DIR, OUTPUT_ROOT
 from src.utils.model import load_vllm_model
-from src.stage1.full import run_stage1
-from src.stage2.full import run_stage2
-from src.stage2.clip import run_stage2 as run_stage2_clip
+from src.stage1.full import run_stage1_flow
+from src.stage1.clip import run_stage1_flow as run_stage1_clip_flow
 from src.stage3.run import run_stage3
 from src.stage4.run import run_stage4
 from src.utils.io_utils import build_video_lookup, scan_video_files
@@ -115,19 +114,19 @@ if __name__ == "__main__":
         video_files = video_files[:args.limit]
     video_lookup = build_video_lookup(args.video_dir)
 
-    # ── Step 1: full variant Stage 1/2 ──────────────────────────────────────
+    # ── Step 1: full variant Stage 1 time flow ──────────────────────────────
     print(f"\n{'─'*70}")
-    print(f"[Step 1] full variant Stage 1/2  →  {run_id}_full")
+    print(f"[Step 1] full variant Stage 1 time flow  →  {run_id}_full")
     print(f"{'─'*70}")
-    run_stage1(model, stage1_sampling_params, run_dir_full, video_files, video_lookup)
-    run_stage2(model, sampling_params, run_dir_full, video_lookup)
+    run_stage1_flow(model, stage1_sampling_params, sampling_params,
+                    run_dir_full, video_files, video_lookup)
 
-    # ── Step 2: clip variant Stage 1/2 ──────────────────────────────────────
+    # ── Step 2: clip variant Stage 1 time flow ──────────────────────────────
     print(f"\n{'─'*70}")
-    print(f"[Step 2] clip variant Stage 1/2  →  {run_id}_clip")
+    print(f"[Step 2] clip variant Stage 1 time flow  →  {run_id}_clip")
     print(f"{'─'*70}")
-    run_stage1(model, stage1_sampling_params, run_dir_clip, video_files, video_lookup)
-    run_stage2_clip(model, sampling_params, run_dir_clip, video_lookup)
+    run_stage1_clip_flow(model, stage1_sampling_params, sampling_params,
+                         run_dir_clip, video_files, video_lookup)
 
     # ── Step 3: min_ensemble ────────────────────────────────────────────────
     print(f"\n{'─'*70}")

@@ -2,8 +2,8 @@
 run_reproduce.py — full+clip min_ensemble + Stage3/4
 
 흐름:
-  1. [full 방식] Stage 1/2  →  {run_id}_full/stage2.csv
-  2. [clip 방식] Stage 1/2  →  {run_id}_clip/stage2.csv
+  1. [full 방식] Stage 1 시간 추론 흐름  →  {run_id}_full/stage2.csv
+  2. [clip 방식] Stage 1 시간 추론 흐름  →  {run_id}_clip/stage2.csv
   3. min_ensemble(stage2)   →  {run_id}/stage2.csv
   4. Stage 3/4              →  {run_id}/stage3.csv, stage4.csv, submission.csv
 
@@ -114,21 +114,17 @@ if __name__ == "__main__":
 
     if args.from_step <= 1:
         print(f"{'─'*70}")
-        print(f"[Step 1] full Stage 1/2  →  {run_id}_full/")
+        print(f"[Step 1] full Stage 1 time flow  →  {run_id}_full/")
         print(f"{'─'*70}")
         run_subprocess("run.py", f"{run_id}_full", args.video_dir, args.limit,
                        extra_args=["--from-stage", "1", "--only-stage", "1"])
-        run_subprocess("run.py", f"{run_id}_full", args.video_dir, args.limit,
-                       extra_args=["--only-stage", "2"])
 
     if args.from_step <= 2:
         print(f"\n{'─'*70}")
-        print(f"[Step 2] clip Stage 1/2  →  {run_id}_clip/")
+        print(f"[Step 2] clip Stage 1 time flow  →  {run_id}_clip/")
         print(f"{'─'*70}")
         run_subprocess("run_clip.py", f"{run_id}_clip", args.video_dir, args.limit,
                        extra_args=["--from-stage", "1", "--only-stage", "1"])
-        run_subprocess("run_clip.py", f"{run_id}_clip", args.video_dir, args.limit,
-                       extra_args=["--only-stage", "2"])
 
     if args.from_step <= 3:
         print(f"\n{'─'*70}")

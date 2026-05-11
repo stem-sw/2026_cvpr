@@ -14,6 +14,7 @@ from ..utils.io_utils import append_stage_row, get_processed_paths, resolve_vide
 from ..utils.logging_utils import format_elapsed
 from ..utils.validators import snap_time_to_frame
 from ..utils.video import load_video_frames_for_vlm, probe_video_info
+from ..stage2.clip import run_stage2
 
 
 # ---------------------------------------------------------------------------
@@ -108,8 +109,11 @@ def _parse_top3_candidates(result: Optional[Dict[str, Any]]) -> List[Optional[fl
 def run_stage1(
     model, sampling_params, run_dir: str,
     video_files: List[str], video_lookup: Dict[str, str],
+    max_frames: Optional[int] = None,
 ) -> None:
-    print(f"\n[Stage 1 / Top3] 사고 시각 Top-3 추출 — {len(video_files)}개 영상")
+    effective_max_frames = max_frames if max_frames is not None else STAGE1_MAX_FRAMES
+    print(f"\n[Stage 1 / Top3] 사고 시각 Top-3 추출 — {len(video_files)}개 영상 "
+          f"(max_frames={effective_max_frames})")
     processed = get_processed_paths(run_dir, 1) if SKIP_EXISTING else set()
 
     for video_name in video_files:
@@ -126,7 +130,7 @@ def run_stage1(
         video_info = probe_video_info(abs_path)
         print(f"\n  처리: {video_name}  ({video_info.get('duration', 0):.1f}s)")
 
-        sampled = load_video_frames_for_vlm(abs_path, STAGE1_TARGET_FPS, STAGE1_MAX_FRAMES)
+        sampled = load_video_frames_for_vlm(abs_path, STAGE1_TARGET_FPS, effective_max_frames)
         if not sampled:
             append_stage_row(run_dir, 1, {
                 "path": video_name, "accident_time": "", "frame_index": "",
@@ -177,3 +181,16 @@ def run_stage1(
             "retry_count"  : retry_count,
         })
         print(f"  완료 ({format_elapsed(time.time() - t0)})")
+
+
+def run_stage1_flow(
+    model, stage1_sampling_params, sampling_params, run_dir: str,
+    video_files: List[str], video_lookup: Dict[str, str],
+    max_frames: Optional[int] = None,
+) -> None:
+    """Top-3 후보 추출부터 집중 클립 정밀화(stage2.csv 생성)까지 한 번에 수행합니다."""
+    run_stage1(
+        model, stage1_sampling_params, run_dir,
+        video_files, video_lookup, max_frames=max_frames,
+    )
+    run_stage2(model, sampling_params, run_dir, video_lookup)

@@ -1,8 +1,7 @@
 """
 pipeline.py — 4단계 파이프라인 오케스트레이션.
 
-Stage 1 : 전체 영상 → accident_time 추론
-Stage 2 : 전체 영상 + 약한 힌트 → 정밀 accident_time + 키프레임/클립 저장
+Stage 1 : accident_time 후보 추론 + 정밀화 → stage1.csv, stage2.csv
 Stage 3 : 4초 클립 → is_single + type 분류
 Stage 4 : 키프레임 + Stage3 결과 → center_x, center_y
 """
@@ -11,7 +10,7 @@ import time
 from typing import Optional
 
 from .config import OUTPUT_ROOT, VIDEO_DIR
-from .stage1.full import run_stage1
+from .stage1.full import run_stage1_flow
 from .stage2.full import run_stage2
 from .stage3.run import run_stage3
 from .stage4.run import run_stage4
@@ -46,12 +45,20 @@ def main(
     model, sampling_params, stage1_sampling_params = load_vllm_model()
     print(f"\n모델 로드 완료 ({format_elapsed(time.time() - t_load)})")
 
-    stages_to_run = [only_stage] if only_stage else list(range(from_stage, 5))
+    if only_stage:
+        stages_to_run = [only_stage]
+    elif from_stage <= 1:
+        stages_to_run = [1, 3, 4]
+    else:
+        stages_to_run = list(range(from_stage, 5))
     t_total = time.time()
 
     for stage_num in stages_to_run:
         if stage_num == 1:
-            run_stage1(model, stage1_sampling_params, run_dir, video_files, video_lookup)
+            run_stage1_flow(
+                model, stage1_sampling_params, sampling_params,
+                run_dir, video_files, video_lookup,
+            )
         elif stage_num == 2:
             run_stage2(model, sampling_params, run_dir, video_lookup)
         elif stage_num == 3:

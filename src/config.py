@@ -68,10 +68,10 @@ REPETITION_PENALTY  = 1.05
 MAX_CALL_RETRIES    = 3
 
 # ── 비전 (픽셀 예산) ────────────────────────────────────────────────────────
-MIN_PIXELS            = 256  * 28 * 28   # 200,704 (448×448) — Stage 1/2 공통
+MIN_PIXELS            = 256  * 28 * 28   # 200,704 (448×448) — Stage 1 time flow 공통
 MAX_PIXELS            = 512  * 28 * 28 if _VARIANT == "tokens" else 1024 * 28 * 28
 #                       tokens=401,408 (633×633) / 그 외=802,816 (896×896) — Stage 3/4
-TIME_STAGE_MAX_PIXELS = MIN_PIXELS       # Stage 1/2는 항상 448×448
+TIME_STAGE_MAX_PIXELS = MIN_PIXELS       # Stage 1 time flow는 항상 448×448
 
 # ── 디버그 ───────────────────────────────────────────────────────────────────
 DEBUG_VISIBLE_EVIDENCE = False

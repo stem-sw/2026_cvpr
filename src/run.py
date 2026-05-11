@@ -4,6 +4,7 @@ run.py — full_run variant 실행 진입점.
 사용법:
   python src/run.py
   python src/run.py --run-id exp_v1
+  python src/run.py --run-id exp_v1 --only-stage 1  # stage1.csv + stage2.csv
   python src/run.py --run-id exp_v1 --from-stage 3
   python src/run.py --run-id exp_v1 --only-stage 4
   python src/run.py --video-dir /path/to/videos

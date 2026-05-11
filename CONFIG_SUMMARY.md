@@ -4,8 +4,8 @@
 
 ```
 run_reproduce.py
-  ├── [Step 1] run.py         → {run_id}_full/   (full 방식)
-  ├── [Step 2] run_clip.py    → {run_id}_clip/   (clip 방식)
+  ├── [Step 1] run.py         → {run_id}_full/   (full Stage 1 time flow)
+  ├── [Step 2] run_clip.py    → {run_id}_clip/   (clip Stage 1 time flow)
   └── [Step 3] min_ensemble   → {run_id}/submission.csv
 ```
 
@@ -13,7 +13,11 @@ run_reproduce.py
 
 ## 설정값 비교
 
-### Stage 1 — 사고 시각 초기 탐지
+### Stage 1 Time Flow — 사고 시각 탐지와 정밀화
+
+Stage 1 time flow는 초기 사고 시각 후보를 만든 뒤, 같은 실행 흐름에서 정밀화까지 수행한다. 파일 호환성을 위해 중간 후보는 `stage1.csv`, 정밀화 결과는 `stage2.csv`로 유지한다.
+
+#### 초기 후보 탐지
 
 | 설정 | full_run | clip |
 |------|----------|------|
@@ -29,7 +33,7 @@ run_reproduce.py
 
 ---
 
-### Stage 2 — 사고 시각 정밀화
+#### 정밀화
 
 | 설정 | full_run | clip |
 |------|----------|------|
@@ -44,7 +48,7 @@ run_reproduce.py
 | STAGE2_CLIP_MAX_PIXELS | - | **512×28²=401,408** |
 | TIME_STAGE_MAX_PIXELS | 256×28²=200,704 | 256×28²=200,704 |
 
-> clip 방식은 Stage1 Top-3 후보 각각에 대해 ±2초 클립을 고해상도/고프레임으로 분석
+> clip 방식은 Stage 1 Top-3 후보 각각에 대해 ±2초 클립을 고해상도/고프레임으로 분석
 
 ---
 

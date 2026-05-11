@@ -1,13 +1,13 @@
 """
 run_clip.py — clip variant 실행 진입점.
 
-Stage1에서 Top-3 후보를 추출한 뒤,
-Stage2에서 각 후보 ±2초 클립을 개별 분석하여 신뢰도 최고 결과를 사용합니다.
+Stage 1 time flow에서 Top-3 후보를 추출한 뒤,
+각 후보 ±2초 클립을 개별 분석하여 신뢰도 최고 결과를 사용합니다.
 
 사용법:
   python src/run_clip.py --run-id exp_clip_v1
-  python src/run_clip.py --run-id exp_clip_v1 --from-stage 2
   python src/run_clip.py --run-id exp_clip_v1 --only-stage 1
+  python src/run_clip.py --run-id exp_clip_v1 --from-stage 3
 """
 import argparse
 import os

@@ -1,0 +1,30 @@
+# Local datasets and generated artifacts
+accident.zip
+data/
+output/
+
+# Python/cache files
+__pycache__/
+**/__pycache__/
+*.pyc
+**/.ipynb_checkpoints/
+
+# Local editor/session files
+.vscode/
+.sisyphus/
+
+# Archived/internal research material excluded from the public root release
+00_data/
+01_planning/
+02_scripts/
+03_source/
+04_visualize/
+05_outputs/
+06_submission/
+07_qwen3.5/
+08_qwen3_8B/
+26_final/
+97_reproduce/
+98_Report/
+99_*/
+paper/
